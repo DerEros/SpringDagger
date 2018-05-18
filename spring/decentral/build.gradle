@@ -42,11 +42,13 @@ dependencyManagement {
 
 dependencies {
 
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+
     // Use JUnit test framework
     testCompile('org.junit.jupiter:junit-jupiter-api')
     testRuntime('org.junit.jupiter:junit-jupiter-engine')
 }
 
 // Define the main class for the application
-mainClassName = 'App'
+mainClassName = 'example.springdagger.decentral.PizzaCatalog'
 
