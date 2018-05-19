@@ -3,6 +3,7 @@ package example.springdagger.decentral.controller;
 import example.springdagger.decentral.data.IngredientsDAO;
 import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { PizzaCatalogController.class })
+@Tag("UnitTest")
 class PizzaCatalogControllerTest {
     @Inject
     private PizzaCatalogController pizzaCatalogController;
@@ -51,11 +53,25 @@ class PizzaCatalogControllerTest {
     }
 
     @Test
+    void testAllIngredientsWhenNoneAreAvailable() {
+        given(ingredientsDAO.getAllIngredients()).willReturn(Flux.empty());
+
+        List<Ingredient> ingredients = pizzaCatalogController.getIngredients().collectList().block();
+        assertThat(ingredients).isEmpty();
+    }
+
+    @Test
     void testOneIngredientReturnedById() {
         given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.just(dummyIngredients.get(1)));
 
         Ingredient ingredient = pizzaCatalogController.getIngredientById(2L).block();
         assertThat(ingredient.getName()).isEqualTo("bar");
+    }
+
+    @Test
+    void testOneIngredientWithNonExistingId() {
+        given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.empty());
+        assertThat(pizzaCatalogController.getIngredientById(2L)).isEqualTo(Mono.empty());
     }
 
     @Test
