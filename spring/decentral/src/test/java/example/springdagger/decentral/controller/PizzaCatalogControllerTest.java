@@ -3,6 +3,7 @@ package example.springdagger.decentral.controller;
 import example.springdagger.decentral.data.IngredientsDAO;
 import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Order;
+import example.springdagger.decentral.util.FakeIngredients;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { PizzaCatalogController.class })
+@ContextConfiguration(classes = { PizzaCatalogController.class, FakeIngredients.class })
 @Tag("UnitTest")
 class PizzaCatalogControllerTest {
     @Inject
@@ -30,14 +30,7 @@ class PizzaCatalogControllerTest {
     @MockBean
     private IngredientsDAO ingredientsDAO;
 
-    private List<Ingredient> dummyIngredients = createDummyIngredients();
-
-    private List<Ingredient> createDummyIngredients() {
-        return Arrays.asList(new Ingredient(1L, Ingredient.Type.DOUGH, "foo", 1.23f),
-                new Ingredient(2L, Ingredient.Type.SAUCE, "bar", 2.34f),
-                new Ingredient(3L, Ingredient.Type.TOPPING, "baz", 3.45f)
-        );
-    }
+    private FakeIngredients fakeIngredients = new FakeIngredients();
 
     @Test
     void testControllerIsInstantiated() {
@@ -46,10 +39,12 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testIngredientsAllIngredientsAreReturnedAtOnce() {
-        given(ingredientsDAO.getAllIngredients()).willReturn(Flux.fromIterable(dummyIngredients));
+        given(ingredientsDAO.getAllIngredients()).willReturn(Flux.fromIterable(fakeIngredients.getAllIngredients()));
 
         List<Ingredient> ingredients = pizzaCatalogController.getIngredients().collectList().block();
-        assertThat(ingredients).extracting("name").contains("foo", "bar", "baz");
+        assertThat(ingredients)
+                .extracting("name")
+                .contains("Thin Dough", "Thick Dough", "Tomato Sauce", "BBQ Sauce", "Cheese", "Salami");
     }
 
     @Test
@@ -62,10 +57,10 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testOneIngredientReturnedById() {
-        given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.just(dummyIngredients.get(1)));
+        given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.just(fakeIngredients.getIngredientById(2L)));
 
         Ingredient ingredient = pizzaCatalogController.getIngredientById(2L).block();
-        assertThat(ingredient.getName()).isEqualTo("bar");
+        assertThat(ingredient.getName()).isEqualTo("Thick Dough");
     }
 
     @Test
