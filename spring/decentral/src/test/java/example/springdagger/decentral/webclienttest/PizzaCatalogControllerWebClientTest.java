@@ -92,13 +92,8 @@ class PizzaCatalogControllerWebClientTest {
     }
 
     @Test
-    @Disabled
     void testRequestNonExistingIngredientById() {
-        String expectedResult = "{\n" +
-                "  \"error\": \"Ingredient with ID 9 not found\"\n" +
-                "}";
-
         given(mockIngredientsDAO.getIngredientById(9L)).willReturn(Mono.empty());
-        client.get().uri("/ingredients/9").exchange().expectStatus().isNotFound().expectBody().json(expectedResult);
+        client.get().uri("/ingredients/9").exchange().expectStatus().isNotFound();
     }
 }

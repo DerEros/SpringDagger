@@ -5,11 +5,15 @@ import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
+
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class PizzaCatalogController {
@@ -27,8 +31,11 @@ public class PizzaCatalogController {
     }
 
     @GetMapping(value = "/ingredients/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<Ingredient> getIngredientById(@PathVariable("id") Long id) {
-        return ingredientsDAO.getIngredientById(id);
+    public Mono<ResponseEntity<Ingredient>> getIngredientById(@PathVariable("id") Long id) {
+        Mono<Ingredient> ingredient = ingredientsDAO.getIngredientById(id);
+
+        return ingredient.map(i -> ok().body(i))
+                .defaultIfEmpty(notFound().build());
     }
 
     @PostMapping(value = "/order",

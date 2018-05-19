@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { PizzaCatalogController.class, FakeIngredients.class })
@@ -59,14 +61,14 @@ class PizzaCatalogControllerTest {
     void testOneIngredientReturnedById() {
         given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.just(fakeIngredients.getIngredientById(2L)));
 
-        Ingredient ingredient = pizzaCatalogController.getIngredientById(2L).block();
+        Ingredient ingredient = pizzaCatalogController.getIngredientById(2L).map(ResponseEntity::getBody).block();
         assertThat(ingredient.getName()).isEqualTo("Thick Dough");
     }
 
     @Test
     void testOneIngredientWithNonExistingId() {
         given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.empty());
-        assertThat(pizzaCatalogController.getIngredientById(2L)).isEqualTo(Mono.empty());
+        assertThat(pizzaCatalogController.getIngredientById(2L).block().getStatusCode()).isEqualTo(NOT_FOUND);
     }
 
     @Test
