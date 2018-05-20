@@ -1,8 +1,8 @@
 package example.springdagger.decentral.webclienttest;
 
-import example.springdagger.decentral.data.IngredientsDAO;
+import example.springdagger.decentral.services.PizzaCatalogService;
+import example.springdagger.decentral.services.PizzaOrderService;
 import example.springdagger.decentral.util.FakeIngredients;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,8 @@ class PizzaCatalogControllerWebClientTest {
 
     @Inject private WebTestClient client;
 
-    @MockBean private IngredientsDAO mockIngredientsDAO;
+    @MockBean private PizzaCatalogService mockCatalogService;
+    @MockBean private PizzaOrderService mockOrderService;
 
     private FakeIngredients fakeIngredients = new FakeIngredients();
 
@@ -66,14 +67,14 @@ class PizzaCatalogControllerWebClientTest {
                 "  }\n" +
                 "]";
 
-        given(mockIngredientsDAO.getAllIngredients())
+        given(mockCatalogService.getAllIngredients())
                 .willReturn(Flux.fromIterable(fakeIngredients.getAllIngredients()));
         client.get().uri("/ingredients").exchange().expectStatus().isOk().expectBody().json(expectedResult);
     }
 
     @Test
     void testReadAllIngredientsWhenNoneAvailable() {
-        given(mockIngredientsDAO.getAllIngredients()).willReturn(Flux.empty());
+        given(mockCatalogService.getAllIngredients()).willReturn(Flux.empty());
         client.get().uri("/ingredients").exchange().expectStatus().isOk().expectBody().json("[]");
     }
 
@@ -86,14 +87,14 @@ class PizzaCatalogControllerWebClientTest {
                 "    \"price\": 0.70\n" +
                 "  }\n";
 
-        given(mockIngredientsDAO.getIngredientById(4L))
+        given(mockCatalogService.getIngredientById(4L))
                 .willReturn(Mono.just(fakeIngredients.getIngredientById(4L)));
         client.get().uri("/ingredients/4").exchange().expectStatus().isOk().expectBody().json(expectedResult);
     }
 
     @Test
     void testRequestNonExistingIngredientById() {
-        given(mockIngredientsDAO.getIngredientById(9L)).willReturn(Mono.empty());
+        given(mockCatalogService.getIngredientById(9L)).willReturn(Mono.empty());
         client.get().uri("/ingredients/9").exchange().expectStatus().isNotFound();
     }
 }

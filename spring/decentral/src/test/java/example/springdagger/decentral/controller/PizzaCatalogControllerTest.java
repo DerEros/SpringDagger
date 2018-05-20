@@ -1,8 +1,9 @@
 package example.springdagger.decentral.controller;
 
-import example.springdagger.decentral.data.IngredientsDAO;
 import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Order;
+import example.springdagger.decentral.services.PizzaCatalogService;
+import example.springdagger.decentral.services.PizzaOrderService;
 import example.springdagger.decentral.util.FakeIngredients;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -29,8 +30,8 @@ class PizzaCatalogControllerTest {
     @Inject
     private PizzaCatalogController pizzaCatalogController;
 
-    @MockBean
-    private IngredientsDAO ingredientsDAO;
+    @MockBean private PizzaCatalogService mockCatalogService;
+    @MockBean private PizzaOrderService mockOrderService;
 
     private FakeIngredients fakeIngredients = new FakeIngredients();
 
@@ -41,7 +42,7 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testIngredientsAllIngredientsAreReturnedAtOnce() {
-        given(ingredientsDAO.getAllIngredients()).willReturn(Flux.fromIterable(fakeIngredients.getAllIngredients()));
+        given(mockCatalogService.getAllIngredients()).willReturn(Flux.fromIterable(fakeIngredients.getAllIngredients()));
 
         List<Ingredient> ingredients = pizzaCatalogController.getIngredients().collectList().block();
         assertThat(ingredients)
@@ -51,7 +52,7 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testAllIngredientsWhenNoneAreAvailable() {
-        given(ingredientsDAO.getAllIngredients()).willReturn(Flux.empty());
+        given(mockCatalogService.getAllIngredients()).willReturn(Flux.empty());
 
         List<Ingredient> ingredients = pizzaCatalogController.getIngredients().collectList().block();
         assertThat(ingredients).isEmpty();
@@ -59,7 +60,7 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testOneIngredientReturnedById() {
-        given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.just(fakeIngredients.getIngredientById(2L)));
+        given(mockCatalogService.getIngredientById(2L)).willReturn(Mono.just(fakeIngredients.getIngredientById(2L)));
 
         Ingredient ingredient = pizzaCatalogController.getIngredientById(2L).map(ResponseEntity::getBody).block();
         assertThat(ingredient.getName()).isEqualTo("Thick Dough");
@@ -67,7 +68,7 @@ class PizzaCatalogControllerTest {
 
     @Test
     void testOneIngredientWithNonExistingId() {
-        given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.empty());
+        given(mockCatalogService.getIngredientById(2L)).willReturn(Mono.empty());
         assertThat(pizzaCatalogController.getIngredientById(2L).block().getStatusCode()).isEqualTo(NOT_FOUND);
     }
 

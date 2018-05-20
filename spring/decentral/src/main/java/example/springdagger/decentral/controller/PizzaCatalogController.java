@@ -1,8 +1,9 @@
 package example.springdagger.decentral.controller;
 
-import example.springdagger.decentral.data.IngredientsDAO;
 import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Order;
+import example.springdagger.decentral.services.PizzaCatalogService;
+import example.springdagger.decentral.services.PizzaOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +19,23 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class PizzaCatalogController {
 
-    private final IngredientsDAO ingredientsDAO;
+    final PizzaCatalogService pizzaCatalogService;
+    final PizzaOrderService pizzaOrderService;
 
     @Inject
-    public PizzaCatalogController(IngredientsDAO ingredientsDAO) {
-        this.ingredientsDAO = ingredientsDAO;
+    public PizzaCatalogController(PizzaCatalogService pizzaCatalogService, PizzaOrderService pizzaOrderService) {
+        this.pizzaCatalogService = pizzaCatalogService;
+        this.pizzaOrderService = pizzaOrderService;
     }
 
     @GetMapping(value = "/ingredients", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Flux<Ingredient> getIngredients() {
-        return ingredientsDAO.getAllIngredients();
+        return pizzaCatalogService.getAllIngredients();
     }
 
     @GetMapping(value = "/ingredients/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<Ingredient>> getIngredientById(@PathVariable("id") Long id) {
-        Mono<Ingredient> ingredient = ingredientsDAO.getIngredientById(id);
+        Mono<Ingredient> ingredient = pizzaCatalogService.getIngredientById(id);
 
         return ingredient.map(i -> ok().body(i))
                 .defaultIfEmpty(notFound().build());
