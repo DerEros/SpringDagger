@@ -3,12 +3,15 @@ package example.springdagger.decentral.webclienttest;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.services.PizzaOrderService;
 import example.springdagger.decentral.util.FakeIngredients;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -16,11 +19,14 @@ import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest
 @AutoConfigureWebTestClient
+@AutoConfigureJson
 @Tag("WebClient")
 class PizzaCatalogControllerWebClientTest {
 
@@ -96,5 +102,26 @@ class PizzaCatalogControllerWebClientTest {
     void testRequestNonExistingIngredientById() {
         given(mockCatalogService.getIngredientById(9L)).willReturn(Mono.empty());
         client.get().uri("/ingredients/9").exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    @Disabled
+    void testPlacePizzaOrder() {
+        given(mockOrderService.orderPizza(any())).willReturn(Mono.empty());
+
+        String order = "{\n" +
+                "  \"pizzaOrders\": [\n" +
+                "    {\n" +
+                "      \"pizza\": {\n" +
+                "        \"ingredients\": [ 1, 3, 6 ]\n" +
+                "      },\n" +
+                "      \"amount\": 3\n" +
+                "    } \n" +
+                "  ]\n" +
+                "}";
+
+        client.post().uri("/order").contentType(MediaType.APPLICATION_JSON_UTF8).body(fromObject(order))
+                .exchange()
+                .expectStatus().isCreated();
     }
 }
