@@ -17,12 +17,7 @@ import java.util.stream.StreamSupport;
 
 @JsonComponent
 public class NewPizzaOrderDeserializer extends JsonDeserializer<NewPizzaOrder> {
-    private final ObjectMapper defaultMapper;
-
-    @Inject
-    public NewPizzaOrderDeserializer(ObjectMapper defaultMapper) {
-        this.defaultMapper = defaultMapper;
-    }
+    @Inject ObjectMapper defaultMapper;
 
     @Override
     public NewPizzaOrder deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
@@ -32,7 +27,7 @@ public class NewPizzaOrderDeserializer extends JsonDeserializer<NewPizzaOrder> {
         if (pizzaOrders.isArray()) {
             List<NewPizzaOrder.PizzaAndAmount> pizzaAndAmounts = StreamSupport.stream(pizzaOrders.spliterator(), true)
                     .map(node -> new NewPizzaOrder.PizzaAndAmount(
-                            defaultMapper.convertValue(node.get("pizza"), Pizza.class),
+                            defaultMapper.convertValue(node.get("pizza"), NewPizzaOrder.SimplifiedPizza.class),
                             node.get("amount").asLong()
                     ))
                     .collect(Collectors.toList());
