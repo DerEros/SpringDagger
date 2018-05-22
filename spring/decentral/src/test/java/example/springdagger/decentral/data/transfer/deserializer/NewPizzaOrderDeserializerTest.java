@@ -1,6 +1,7 @@
 package example.springdagger.decentral.data.transfer.deserializer;
 
 import example.springdagger.decentral.data.transfer.dto.NewPizzaOrder;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -16,11 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @JsonTest
 @AutoConfigureJsonTesters
+@Tag("UnitTest")
 class NewPizzaOrderDeserializerTest {
     @Inject private JacksonTester<NewPizzaOrder> json;
 
     @Test
-    public void testSimplePizzaOrderIsDeserialized() throws IOException {
+    void testSimplePizzaOrderIsDeserialized() throws IOException {
         //language=JSON
         String jsonStr = "{\n" +
                 "  \"pizzaOrders\": [\n" +

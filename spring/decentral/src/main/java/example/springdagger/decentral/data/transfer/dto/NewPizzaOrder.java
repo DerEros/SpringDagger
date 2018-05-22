@@ -1,12 +1,12 @@
 package example.springdagger.decentral.data.transfer.dto;
 
-import example.springdagger.decentral.model.Pizza;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
 public class NewPizzaOrder {
     public static class SimplifiedPizza {
-        List<Long> ingredientIDs;
+        @JsonProperty("ingredients") List<Long> ingredientIDs;
 
         public List<Long> getIngredientIDs() {
             return ingredientIDs;
@@ -38,15 +38,13 @@ public class NewPizzaOrder {
         }
     }
 
-    private final List<PizzaAndAmount> pizzaOrders;
-
-    public NewPizzaOrder(List<PizzaAndAmount> pizzaOrders) {
-        this.pizzaOrders = pizzaOrders;
-    }
+    private List<PizzaAndAmount> pizzaOrders;
 
     public List<PizzaAndAmount> getPizzaOrders() {
         return pizzaOrders;
     }
 
-
+    public void setPizzaOrders(List<PizzaAndAmount> pizzaOrders) {
+        this.pizzaOrders = pizzaOrders;
+    }
 }
