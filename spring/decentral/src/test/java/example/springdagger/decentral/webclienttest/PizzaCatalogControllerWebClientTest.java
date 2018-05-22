@@ -35,7 +35,7 @@ class PizzaCatalogControllerWebClientTest {
     @MockBean private PizzaCatalogService mockCatalogService;
     @MockBean private PizzaOrderService mockOrderService;
 
-    private FakeIngredients fakeIngredients = new FakeIngredients();
+    private final FakeIngredients fakeIngredients = new FakeIngredients();
 
     @Test
     void testReadAllIngredients() {

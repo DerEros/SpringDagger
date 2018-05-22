@@ -1,13 +1,9 @@
 package example.springdagger.decentral.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.boot.jackson.JsonComponent;
-
 import java.util.List;
 import java.util.Optional;
 
-public class Pizza {
+class Pizza {
     private Optional<Long> id;
     private List<Ingredient> ingredients;
 

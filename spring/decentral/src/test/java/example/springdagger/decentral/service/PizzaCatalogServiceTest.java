@@ -27,7 +27,7 @@ class PizzaCatalogServiceTest {
 
     @MockBean private IngredientsDAO ingredientsDAO;
     
-    private FakeIngredients fakeIngredients = new FakeIngredients();
+    private final FakeIngredients fakeIngredients = new FakeIngredients();
 
     @Test
     void testControllerIsInstantiated() {

@@ -10,8 +10,8 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toMap;
 
 public class FakeIngredients {
-    private List<Ingredient> dummyIngredients = createDummyIngredients();
-    private Map<Long, Ingredient> dummyIngredientsById = mapById(dummyIngredients);
+    private final List<Ingredient> dummyIngredients = createDummyIngredients();
+    private final Map<Long, Ingredient> dummyIngredientsById = mapById(dummyIngredients);
 
     private List<Ingredient> createDummyIngredients() {
         return Arrays.asList(new Ingredient(1L, Ingredient.Type.DOUGH, "Thin Dough", 1.0f),

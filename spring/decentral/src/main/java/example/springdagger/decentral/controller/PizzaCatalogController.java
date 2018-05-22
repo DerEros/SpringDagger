@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class PizzaCatalogController {
 
-    final PizzaCatalogService pizzaCatalogService;
+    private final PizzaCatalogService pizzaCatalogService;
     final PizzaOrderService pizzaOrderService;
 
     @Inject
