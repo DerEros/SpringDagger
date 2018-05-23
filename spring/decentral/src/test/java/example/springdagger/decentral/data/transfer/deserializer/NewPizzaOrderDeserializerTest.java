@@ -1,7 +1,7 @@
 package example.springdagger.decentral.data.transfer.deserializer;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import example.springdagger.decentral.data.transfer.dto.NewPizzaOrder;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -139,7 +138,6 @@ class NewPizzaOrderDeserializerTest {
     }
 
     @Test
-    @Disabled
     void testOrderLacksMandatoryField() {
         //language=JSON
         String jsonStr = "{\n" +
@@ -152,7 +150,8 @@ class NewPizzaOrderDeserializerTest {
                 "  ]\n" +
                 "}";
 
-        assertThatThrownBy(() -> { NewPizzaOrder result = json.parse(jsonStr).getObject(); })
-                .isInstanceOf(ParseException.class);
+        assertThatThrownBy(() -> json.parse(jsonStr))
+                .isInstanceOf(MismatchedInputException.class)
+                .hasMessageContaining("amount");
     }
 }
