@@ -1,6 +1,7 @@
 package example.springdagger.decentral.service;
 
 import example.springdagger.decentral.data.IngredientsDAO;
+import example.springdagger.decentral.data.PizzaDAO;
 import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.util.FakeIngredients;
@@ -26,6 +27,7 @@ class PizzaCatalogServiceTest {
     @Inject private PizzaCatalogService pizzaCatalogService;
 
     @MockBean private IngredientsDAO ingredientsDAO;
+    @MockBean private PizzaDAO pizzaDAO;
     
     private final FakeIngredients fakeIngredients = new FakeIngredients();
 

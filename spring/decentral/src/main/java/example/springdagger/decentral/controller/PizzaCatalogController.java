@@ -2,6 +2,7 @@ package example.springdagger.decentral.controller;
 
 import example.springdagger.decentral.data.transfer.dto.NewPizzaOrder;
 import example.springdagger.decentral.model.Ingredient;
+import example.springdagger.decentral.model.Pizza;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.services.PizzaOrderService;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public class PizzaCatalogController {
 
         return ingredient.map(i -> ok().body(i))
                 .defaultIfEmpty(notFound().build());
+    }
+
+    @GetMapping(value = "/pizza", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Flux<Pizza> getPredefPizza(@RequestParam(value = "amount", defaultValue = "10") Integer amount) {
+        return pizzaCatalogService.getPredefPizzas(amount);
     }
 
     @PostMapping(value = "/order",

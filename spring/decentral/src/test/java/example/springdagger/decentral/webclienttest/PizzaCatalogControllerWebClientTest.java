@@ -1,5 +1,7 @@
 package example.springdagger.decentral.webclienttest;
 
+import example.springdagger.decentral.model.Ingredient;
+import example.springdagger.decentral.model.Pizza;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.services.PizzaOrderService;
 import example.springdagger.decentral.util.FakeIngredients;
@@ -19,8 +21,15 @@ import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.verify;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 @ExtendWith(SpringExtension.class)
@@ -122,5 +131,51 @@ class PizzaCatalogControllerWebClientTest {
         client.post().uri("/order").contentType(MediaType.APPLICATION_JSON_UTF8).body(fromObject(order))
                 .exchange()
                 .expectStatus().isCreated();
+    }
+
+    @Test
+    void testRequestUnspecifiedAmountOfPizzas() {
+        List<Ingredient> ingredients =
+                Stream.of(1L, 3L, 5L).map(fakeIngredients::getIngredientById).collect(Collectors.toList());
+        Pizza pizza1 = new Pizza(1L, ingredients);
+        //language=JSON
+        String expected="[\n" +
+                "  {\n" +
+                "    \"id\": 1,\n" +
+                "    \"ingredients\": [\n" +
+                "      {\n" +
+                "        \"id\": 1,\n" +
+                "        \"ingredientType\": \"DOUGH\",\n" +
+                "        \"name\": \"Thin Dough\",\n" +
+                "        \"price\": 1.0\n" +
+                "      }, {\n" +
+                "        \"id\": 3,\n" +
+                "        \"ingredientType\": \"SAUCE\",\n" +
+                "        \"name\": \"Tomato Sauce\",\n" +
+                "        \"price\": 0.5\n" +
+                "      }, {\n" +
+                "        \"id\": 5,\n" +
+                "        \"ingredientType\": \"TOPPING\",\n" +
+                "        \"name\": \"Cheese\",\n" +
+                "        \"price\": 0.0\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  }\n" +
+                "]";
+
+        given(mockCatalogService.getPredefPizzas(any())).willReturn(Flux.just(pizza1));
+
+        client.get().uri("/pizza").exchange().expectStatus().isOk().expectBody().json(expected);
+
+        then(mockCatalogService).should().getPredefPizzas(10);
+    }
+
+    @Test
+    void testRequestFivePizzas() {
+        given(mockCatalogService.getPredefPizzas(any())).willReturn(Flux.empty());
+
+        client.get().uri("/pizza/?amount=5").exchange().expectStatus().isOk().expectBody().json("[]");
+
+        then(mockCatalogService).should().getPredefPizzas(5);
     }
 }

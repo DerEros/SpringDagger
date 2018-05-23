@@ -3,7 +3,7 @@ package example.springdagger.decentral.model;
 import java.util.List;
 import java.util.Optional;
 
-class Pizza {
+public class Pizza {
     private Optional<Long> id;
     private List<Ingredient> ingredients;
 
