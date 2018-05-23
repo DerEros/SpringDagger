@@ -105,7 +105,6 @@ class PizzaCatalogControllerWebClientTest {
     }
 
     @Test
-    @Disabled
     void testPlacePizzaOrder() {
         given(mockOrderService.orderPizza(any())).willReturn(Mono.empty());
 

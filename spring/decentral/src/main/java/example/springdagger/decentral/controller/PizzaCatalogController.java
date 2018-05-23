@@ -1,7 +1,7 @@
 package example.springdagger.decentral.controller;
 
+import example.springdagger.decentral.data.transfer.dto.NewPizzaOrder;
 import example.springdagger.decentral.model.Ingredient;
-import example.springdagger.decentral.model.Order;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.services.PizzaOrderService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class PizzaCatalogController {
 
     private final PizzaCatalogService pizzaCatalogService;
-    final PizzaOrderService pizzaOrderService;
+    private final PizzaOrderService pizzaOrderService;
 
     @Inject
     public PizzaCatalogController(PizzaCatalogService pizzaCatalogService, PizzaOrderService pizzaOrderService) {
@@ -45,7 +45,7 @@ public class PizzaCatalogController {
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Void> placeOrder(@RequestBody Mono<Order> order) {
-        return Mono.empty();
+    public Mono<Void> placeOrder(@RequestBody Mono<NewPizzaOrder> order) {
+        return pizzaOrderService.orderPizza(order);
     }
 }
