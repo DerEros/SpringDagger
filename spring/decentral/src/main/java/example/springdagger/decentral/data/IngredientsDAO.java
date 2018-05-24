@@ -4,15 +4,23 @@ import example.springdagger.decentral.model.Ingredient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
 public class IngredientsDAO {
+    private final IngredientsRepo ingredientsRepo;
+
+    @Inject
+    public IngredientsDAO(IngredientsRepo ingredientsRepo) {
+        this.ingredientsRepo = ingredientsRepo;
+    }
+
     public Flux<Ingredient> getAllIngredients() {
-        return Flux.empty();
+        return Flux.fromIterable(ingredientsRepo.findAll());
     }
 
     public Mono<Ingredient> getIngredientById(Long id) {
-        return Mono.empty();
+        return Mono.justOrEmpty(ingredientsRepo.findById(id));
     }
 }

@@ -1,5 +1,9 @@
 package example.springdagger.decentral.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Ingredient {
     public enum Type {
         DOUGH,
@@ -7,6 +11,7 @@ public class Ingredient {
         TOPPING
     }
 
+    @Id
     private Long id;
     private Type ingredientType;
     private String name;

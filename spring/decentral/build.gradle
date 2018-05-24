@@ -42,9 +42,11 @@ dependencyManagement {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('javax.inject:javax.inject:1')
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile('com.h2database:h2')
 
     // Use JUnit test framework
     testCompile('org.junit.jupiter:junit-jupiter-api')
