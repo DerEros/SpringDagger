@@ -19,7 +19,7 @@ import javax.inject.Inject;
 @SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
 @DataJpaTest
 @EntityScan(basePackageClasses = {Ingredient.class})
-@Tag("UnitTest")
+@Tag("DBTest")
 class IngredientsDAOTest {
     private final FakeIngredients fakeIngredients = new FakeIngredients();
     @Inject
