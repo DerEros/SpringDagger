@@ -3,8 +3,10 @@ package example.springdagger.decentral.service;
 import example.springdagger.decentral.data.IngredientsDAO;
 import example.springdagger.decentral.data.PizzaDAO;
 import example.springdagger.decentral.model.Ingredient;
+import example.springdagger.decentral.model.Pizza;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.util.FakeIngredients;
+import example.springdagger.decentral.util.FakePizzas;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,11 +15,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
@@ -30,6 +34,7 @@ class PizzaCatalogServiceTest {
     @MockBean private PizzaDAO pizzaDAO;
     
     private final FakeIngredients fakeIngredients = new FakeIngredients();
+    private final FakePizzas fakePizzas = new FakePizzas();
 
     @Test
     void testControllerIsInstantiated() {
@@ -66,5 +71,20 @@ class PizzaCatalogServiceTest {
     void testOneIngredientWithNonExistingId() {
         given(ingredientsDAO.getIngredientById(2L)).willReturn(Mono.empty());
         assertThat(pizzaCatalogService.getIngredientById(2L)).isEqualTo(Mono.empty());
+    }
+
+    @Test
+    void testRequestPredefPizza() {
+        Pizza pizza = fakePizzas.getPizza(1);
+        given(pizzaDAO.getPredefPizza(any())).willReturn(Flux.just(pizza));
+
+        StepVerifier.create(pizzaCatalogService.getPredefPizzas(1)).expectNext(pizza).verifyComplete();
+    }
+
+    @Test
+    void testRequestNonExistingPredefPizza() {
+        given(pizzaDAO.getPredefPizza(any())).willReturn(Flux.empty());
+
+        StepVerifier.create(pizzaCatalogService.getPredefPizzas(4711)).verifyComplete();
     }
 }

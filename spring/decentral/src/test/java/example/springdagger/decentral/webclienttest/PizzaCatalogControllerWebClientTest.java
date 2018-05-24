@@ -1,11 +1,10 @@
 package example.springdagger.decentral.webclienttest;
 
-import example.springdagger.decentral.model.Ingredient;
 import example.springdagger.decentral.model.Pizza;
 import example.springdagger.decentral.services.PizzaCatalogService;
 import example.springdagger.decentral.services.PizzaOrderService;
 import example.springdagger.decentral.util.FakeIngredients;
-import org.junit.jupiter.api.Disabled;
+import example.springdagger.decentral.util.FakePizzas;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,15 +20,9 @@ import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.verify;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 @ExtendWith(SpringExtension.class)
@@ -45,6 +38,7 @@ class PizzaCatalogControllerWebClientTest {
     @MockBean private PizzaOrderService mockOrderService;
 
     private final FakeIngredients fakeIngredients = new FakeIngredients();
+    private final FakePizzas fakePizzas = new FakePizzas();
 
     @Test
     void testReadAllIngredients() {
@@ -135,9 +129,7 @@ class PizzaCatalogControllerWebClientTest {
 
     @Test
     void testRequestUnspecifiedAmountOfPizzas() {
-        List<Ingredient> ingredients =
-                Stream.of(1L, 3L, 5L).map(fakeIngredients::getIngredientById).collect(Collectors.toList());
-        Pizza pizza1 = new Pizza(1L, ingredients);
+        Pizza pizza1 = fakePizzas.getPizza(0);
         //language=JSON
         String expected="[\n" +
                 "  {\n" +
