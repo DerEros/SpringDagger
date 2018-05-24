@@ -8,6 +8,8 @@ import javax.inject.Named;
 @Named
 public class PizzaOrderService {
     public Mono<Void> orderPizza(Mono<NewPizzaOrder> order) {
-        return Mono.empty();
+        return order
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Pizza order may not be empty")))
+                .then();
     }
 }
