@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS ingredients;
 DROP TABLE IF EXISTS special_offers;
 
-CREATE TABLE IF NOT EXISTS ingredients ( id INT PRIMARY KEY, ingredient_type VARCHAR, name VARCHAR, price FLOAT );
+CREATE TABLE IF NOT EXISTS ingredients ( id INT PRIMARY KEY, ingredient_type VARCHAR, name VARCHAR, priccccce FLOAT );
 CREATE TABLE IF NOT EXISTS special_offers ( id INT PRIMARY KEY, ingredients_id INT, description VARCHAR , details VARCHAR );
 
 INSERT INTO ingredients VALUES ( 1, 'DOUGH', 'Thin Dough', 1.0 );
