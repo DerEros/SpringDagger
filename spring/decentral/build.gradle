@@ -24,6 +24,13 @@ apply plugin: 'application'
 apply plugin: SpringBootPlugin
 apply plugin: DependencyManagementPlugin
 
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+}
+
 repositories {
     jcenter()
 
@@ -44,7 +51,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('javax.inject:javax.inject:1')
-
+    
+    // Necessary starting with Java 9
+    compile('javax.xml.bind:jaxb-api:2.3.0')
+    
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile('com.h2database:h2')
 
