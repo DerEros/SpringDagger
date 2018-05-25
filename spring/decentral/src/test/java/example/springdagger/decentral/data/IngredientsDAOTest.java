@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
@@ -94,6 +95,14 @@ class IngredientsDAOTest {
                         "Double cheese gratis",
                         "Mozzarella for the same price",
                         "Make it hot!");
+    }
+
+    @Test
+    @Sql({"IngredientsAndSpecialOfferWithBrokenTable.sql"})
+    void testIngredientsWithSpecialOffersWithBrokenTable() {
+        assertThatThrownBy(ingredientsDAO::getIngredientsWithSpecialOffers)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Getting column price from result set should not throw exception");
     }
 
 }
