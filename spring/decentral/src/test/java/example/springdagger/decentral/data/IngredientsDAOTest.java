@@ -17,17 +17,11 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import javax.inject.Inject;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
@@ -42,7 +36,7 @@ class IngredientsDAOTest {
     private TestEntityManager entityManager;
 
     @Inject
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void testRetrieveAllIngredients() {
@@ -89,26 +83,17 @@ class IngredientsDAOTest {
     @Test
     @Sql({"IngredientsAndSpecialOffer.sql"})
     void testIngredientsWithSpecialOffers() {
-        String query = "SELECT * FROM ingredients AS i JOIN special_offers AS s ON s.ingredients_id=i.id";
-        List<String> columnNames = Arrays.asList("ID", "ingredient_type", "name", "price", "description");
-        List<Map<String, String>> rows = new ArrayList<>();
+        Flux<Map<String, String>> ingredientsWithSpecialOffers = ingredientsDAO.getIngredientsWithSpecialOffers();
 
-        jdbcTemplate.query(query, (result) -> {
-            Map<String, String> row = columnNames.stream().collect(Collectors.toMap(Function.identity(), getString(result)));
-            rows.add(row);
-        });
+        List<Map<String, String>> rows = ingredientsWithSpecialOffers.toStream().collect(Collectors.toList());
 
-        assertThat(rows).isEmpty();
+        assertThat(rows).hasSize(4);
+        assertThat(rows.stream().map(r -> r.get("ID")).collect(Collectors.toList())).containsOnly("2", "5", "5", "6");
+        assertThat(rows.stream().map(r -> r.get("description")).collect(Collectors.toList()))
+                .containsOnly("Thick Dough for the price of thin dough",
+                        "Double cheese gratis",
+                        "Mozzarella for the same price",
+                        "Make it hot!");
     }
 
-    private Function<String, String> getString(ResultSet rs) {
-        return (columnName) -> {
-            try {
-                return rs.getString(columnName);
-            } catch (SQLException e) {
-                fail("Getting column " + columnName + " from result set should not throw exception");
-                throw new IllegalStateException("Should never get here");
-            }
-        };
-    }
 }

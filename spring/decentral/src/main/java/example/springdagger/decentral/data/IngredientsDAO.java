@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Map;
 
 @Named
 public class IngredientsDAO {
@@ -22,5 +23,9 @@ public class IngredientsDAO {
 
     public Mono<Ingredient> getIngredientById(Long id) {
         return Mono.justOrEmpty(ingredientsRepo.findById(id));
+    }
+
+    public Flux<Map<String, String>> getIngredientsWithSpecialOffers() {
+        return Flux.fromIterable(ingredientsRepo.queryIngredientsAndSpecialOffers());
     }
 }
