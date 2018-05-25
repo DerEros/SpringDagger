@@ -9,12 +9,25 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import javax.inject.Inject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
@@ -27,6 +40,9 @@ class IngredientsDAOTest {
     private IngredientsDAO ingredientsDAO;
     @Inject
     private TestEntityManager entityManager;
+
+    @Inject
+    JdbcTemplate jdbcTemplate;
 
     @Test
     void testRetrieveAllIngredients() {
@@ -68,5 +84,31 @@ class IngredientsDAOTest {
         Mono<Ingredient> foundIngredient = ingredientsDAO.getIngredientById(4223L);
 
         StepVerifier.create(foundIngredient).verifyComplete();
+    }
+
+    @Test
+    @Sql({"IngredientsAndSpecialOffer.sql"})
+    void testIngredientsWithSpecialOffers() {
+        String query = "SELECT * FROM ingredients AS i JOIN special_offers AS s ON s.ingredients_id=i.id";
+        List<String> columnNames = Arrays.asList("ID", "ingredient_type", "name", "price", "description");
+        List<Map<String, String>> rows = new ArrayList<>();
+
+        jdbcTemplate.query(query, (result) -> {
+            Map<String, String> row = columnNames.stream().collect(Collectors.toMap(Function.identity(), getString(result)));
+            rows.add(row);
+        });
+
+        assertThat(rows).isEmpty();
+    }
+
+    private Function<String, String> getString(ResultSet rs) {
+        return (columnName) -> {
+            try {
+                return rs.getString(columnName);
+            } catch (SQLException e) {
+                fail("Getting column " + columnName + " from result set should not throw exception");
+                throw new IllegalStateException("Should never get here");
+            }
+        };
     }
 }
