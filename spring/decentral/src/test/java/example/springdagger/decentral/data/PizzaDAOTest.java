@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import javax.inject.Inject;
 
@@ -37,5 +39,29 @@ class PizzaDAOTest {
         assertThat(pizza.getName()).isEqualTo("Pizza Salami");
         assertThat(pizza.getIngredients().stream().map(Ingredient::getName))
                 .containsOnly("Thin Dough", "Tomato Sauce", "Salami");
+    }
+
+    @Test
+    void testLoadOnePizza() {
+        Flux<Pizza> pizzas = pizzaDAO.getPredefPizzas(1);
+        StepVerifier.create(pizzas)
+                .expectNextCount(1)
+                .verifyComplete();
+    }
+
+    @Test
+    void testLoadThreePizza() {
+        Flux<Pizza> pizzas = pizzaDAO.getPredefPizzas(3);
+        StepVerifier.create(pizzas)
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    void testGetMaxAmountOfPizza() {
+        Flux<Pizza> pizzas = pizzaDAO.getPredefPizzas(Integer.MAX_VALUE);
+        StepVerifier.create(pizzas)
+                .expectNextCount(4)
+                .verifyComplete();
     }
 }

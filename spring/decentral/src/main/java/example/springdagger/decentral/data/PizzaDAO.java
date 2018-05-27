@@ -18,7 +18,7 @@ public class PizzaDAO {
     }
 
     public Flux<Pizza> getPredefPizzas(Integer amount) {
-        return Flux.empty();
+        return Flux.fromIterable(pizzaRepo.findAll()).take(amount);
     }
 
     public Mono<Pizza> getPredefPizzaById(Long id) {
