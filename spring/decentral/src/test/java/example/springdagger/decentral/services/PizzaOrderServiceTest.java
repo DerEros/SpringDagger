@@ -1,6 +1,8 @@
 package example.springdagger.decentral.services;
 
 import example.springdagger.decentral.data.transfer.dto.NewPizzaOrder;
+import example.springdagger.decentral.data.transfer.dto.PizzaAndAmount;
+import example.springdagger.decentral.data.transfer.dto.SimplifiedPizza;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,8 +25,8 @@ class PizzaOrderServiceTest {
 
     @Test
     void testOrderPizza() {
-        NewPizzaOrder.SimplifiedPizza pizza = new NewPizzaOrder.SimplifiedPizza(Arrays.asList(1L, 3L, 5L));
-        NewPizzaOrder.PizzaAndAmount pizzaAndAmount = new NewPizzaOrder.PizzaAndAmount(pizza, 3L);
+        SimplifiedPizza pizza = new SimplifiedPizza(Arrays.asList(1L, 3L, 5L));
+        PizzaAndAmount pizzaAndAmount = new PizzaAndAmount(pizza, 3L);
         NewPizzaOrder order = new NewPizzaOrder(Collections.singletonList(pizzaAndAmount));
 
         StepVerifier.create(pizzaOrderService.orderPizza(Mono.just(order))).verifyComplete();
