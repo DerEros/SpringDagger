@@ -1,0 +1,72 @@
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+buildscript {
+    ext {
+        springBootVersion = '2.0.2.RELEASE'
+        springCloudVersion = 'Finchley.RC1'
+        junitVersion = '5.2.0'
+    }
+    repositories {
+        mavenCentral()
+        // To allow to pull in milestone releases from Spring
+        maven { url 'https://repo.spring.io/milestone' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE")
+
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: SpringBootPlugin
+apply plugin: DependencyManagementPlugin
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+}
+
+repositories {
+    jcenter()
+
+    // To allow to pull in milestone releases from Spring
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        mavenBom "org.junit:junit-bom:${junitVersion}"
+    }
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('javax.inject:javax.inject:1')
+    
+    // Necessary starting with Java 9
+    compile('javax.xml.bind:jaxb-api:2.3.0')
+    
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile('com.h2database:h2')
+
+    // Use JUnit test framework
+    testCompile('org.junit.jupiter:junit-jupiter-api')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine')
+
+    testCompile("org.assertj:assertj-core:3.10.0")
+
+    testCompile("io.projectreactor:reactor-test")
+}
+
+// Define the main class for the application
+mainClassName = 'example.springdagger.decentral.PizzaCatalog'
+
