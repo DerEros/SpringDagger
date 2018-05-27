@@ -2,8 +2,10 @@ package example.springdagger.decentral.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "ingredients")
 public class Ingredient {
     public enum Type {
         DOUGH,
@@ -24,6 +26,9 @@ public class Ingredient {
         this.price = price;
     }
 
+    public Ingredient() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,5 +43,21 @@ public class Ingredient {
 
     public Float getPrice() {
         return price;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIngredientType(Type ingredientType) {
+        this.ingredientType = ingredientType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 }

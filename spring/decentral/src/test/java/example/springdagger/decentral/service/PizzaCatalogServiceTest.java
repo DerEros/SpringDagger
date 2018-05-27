@@ -76,14 +76,14 @@ class PizzaCatalogServiceTest {
     @Test
     void testRequestPredefPizza() {
         Pizza pizza = fakePizzas.getPizza(1);
-        given(pizzaDAO.getPredefPizza(any())).willReturn(Flux.just(pizza));
+        given(pizzaDAO.getPredefPizzas(any())).willReturn(Flux.just(pizza));
 
         StepVerifier.create(pizzaCatalogService.getPredefPizzas(1)).expectNext(pizza).verifyComplete();
     }
 
     @Test
     void testRequestNonExistingPredefPizza() {
-        given(pizzaDAO.getPredefPizza(any())).willReturn(Flux.empty());
+        given(pizzaDAO.getPredefPizzas(any())).willReturn(Flux.empty());
 
         StepVerifier.create(pizzaCatalogService.getPredefPizzas(4711)).verifyComplete();
     }

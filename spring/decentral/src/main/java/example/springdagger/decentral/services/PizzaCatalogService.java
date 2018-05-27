@@ -29,5 +29,7 @@ public class PizzaCatalogService {
         return ingredientsDAO.getIngredientById(id);
     }
 
-    public Flux<Pizza> getPredefPizzas(Integer amount) { return pizzaDAO.getPredefPizza(amount); }
+    public Flux<Pizza> getPredefPizzas(Integer amount) {
+        return pizzaDAO.getPredefPizzas(amount);
+    }
 }

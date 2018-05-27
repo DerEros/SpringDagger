@@ -20,6 +20,9 @@ public class Pizza {
         this.ingredients = ingredients;
     }
 
+    public Pizza() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -30,5 +33,17 @@ public class Pizza {
 
     public String getName() {
         return name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }
