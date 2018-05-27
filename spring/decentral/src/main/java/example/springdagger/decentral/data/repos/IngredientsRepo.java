@@ -1,4 +1,4 @@
-package example.springdagger.decentral.data;
+package example.springdagger.decentral.data.repos;
 
 import example.springdagger.decentral.model.Ingredient;
 import org.springframework.data.repository.CrudRepository;

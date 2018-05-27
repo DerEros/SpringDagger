@@ -1,5 +1,6 @@
 package example.springdagger.decentral.data;
 
+import example.springdagger.decentral.data.repos.IngredientsRepo;
 import example.springdagger.decentral.model.Ingredient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

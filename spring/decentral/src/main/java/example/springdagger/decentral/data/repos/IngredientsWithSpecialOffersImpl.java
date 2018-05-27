@@ -1,4 +1,4 @@
-package example.springdagger.decentral.data;
+package example.springdagger.decentral.data.repos;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import reactor.core.publisher.Flux;
