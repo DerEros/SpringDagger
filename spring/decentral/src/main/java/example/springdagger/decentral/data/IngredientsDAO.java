@@ -26,6 +26,6 @@ public class IngredientsDAO {
     }
 
     public Flux<Map<String, String>> getIngredientsWithSpecialOffers() {
-        return Flux.fromIterable(ingredientsRepo.queryIngredientsAndSpecialOffers());
+        return ingredientsRepo.queryIngredientsAndSpecialOffers();
     }
 }

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
@@ -89,20 +88,11 @@ class IngredientsDAOTest {
         List<Map<String, String>> rows = ingredientsWithSpecialOffers.toStream().collect(Collectors.toList());
 
         assertThat(rows).hasSize(4);
-        assertThat(rows.stream().map(r -> r.get("ID")).collect(Collectors.toList())).containsOnly("2", "5", "5", "6");
-        assertThat(rows.stream().map(r -> r.get("description")).collect(Collectors.toList()))
+        assertThat(rows.stream().map(r -> r.get("INGREDIENTS_ID")).collect(Collectors.toList())).containsOnly("2", "5", "5", "6");
+        assertThat(rows.stream().map(r -> r.get("DESCRIPTION")).collect(Collectors.toList()))
                 .containsOnly("Thick Dough for the price of thin dough",
                         "Double cheese gratis",
                         "Mozzarella for the same price",
                         "Make it hot!");
     }
-
-    @Test
-    @Sql({"IngredientsAndSpecialOfferWithBrokenTable.sql"})
-    void testIngredientsWithSpecialOffersWithBrokenTable() {
-        assertThatThrownBy(ingredientsDAO::getIngredientsWithSpecialOffers)
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Getting column price from result set should not throw exception");
-    }
-
 }

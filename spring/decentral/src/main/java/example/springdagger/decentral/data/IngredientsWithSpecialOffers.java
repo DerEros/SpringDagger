@@ -1,8 +1,9 @@
 package example.springdagger.decentral.data;
 
-import java.util.List;
+import reactor.core.publisher.Flux;
+
 import java.util.Map;
 
 public interface IngredientsWithSpecialOffers {
-    List<Map<String, String>> queryIngredientsAndSpecialOffers();
+    Flux<Map<String, String>> queryIngredientsAndSpecialOffers();
 }
