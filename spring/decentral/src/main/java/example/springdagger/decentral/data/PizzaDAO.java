@@ -1,12 +1,21 @@
 package example.springdagger.decentral.data;
 
+import example.springdagger.decentral.model.Pizza;
 import reactor.core.publisher.Flux;
 
+import javax.inject.Inject;
 import javax.inject.Named;
-import example.springdagger.decentral.model.Pizza;
 
 @Named
 public class PizzaDAO {
+
+    private final PizzaRepo pizzaRepo;
+
+    @Inject
+    public PizzaDAO(PizzaRepo pizzaRepo) {
+        this.pizzaRepo = pizzaRepo;
+    }
+
     public Flux<Pizza> getPredefPizza(Integer amount) {
         return Flux.empty();
     }
