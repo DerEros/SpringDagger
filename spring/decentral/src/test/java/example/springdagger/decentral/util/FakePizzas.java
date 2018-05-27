@@ -19,19 +19,19 @@ public class FakePizzas {
 
     private List<Pizza> generatePizzas() {
         return Arrays.asList(
-                generatePizzaWithIngredients(1, 1, 3, 5),
-                generatePizzaWithIngredients(2, 2, 4, 6),
-                generatePizzaWithIngredients(3, 1, 4, 6),
-                generatePizzaWithIngredients(4, 2, 3, 5)
+                generatePizzaWithIngredients(1, "Prosciutto", 1, 3, 5),
+                generatePizzaWithIngredients(2, "Quattro formaggi", 2, 4, 6),
+                generatePizzaWithIngredients(3, "Hawaii", 1, 4, 6),
+                generatePizzaWithIngredients(4, "Salami", 2, 3, 5)
         );
     }
 
-    private Pizza generatePizzaWithIngredients(Integer pizzaId, Integer... ids) {
+    private Pizza generatePizzaWithIngredients(Integer pizzaId, String name, Integer... ids) {
         List<Ingredient> ingredients = Stream.of(ids)
                 .map(Long::valueOf)
                 .map(fakeIngredients::getIngredientById)
                 .collect(Collectors.toList());
-        return new Pizza(Long.valueOf(pizzaId), ingredients);
+        return new Pizza(Long.valueOf(pizzaId), name, ingredients);
     }
 
     public Pizza getPizza(Integer index) {
