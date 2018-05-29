@@ -1,6 +1,7 @@
 package example.springdagger.central;
 
 import example.springdagger.central.services.PizzaCatalogService;
+import example.springdagger.central.services.PizzaOrderService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ class RoutesConfigTest {
 
     @MockBean
     private PizzaCatalogService pizzaCatalogServiceMock;
+
+    @MockBean
+    private PizzaOrderService pizzaOrderServiceMock;
 
     @Test
     void testContextLoadsProperly() {

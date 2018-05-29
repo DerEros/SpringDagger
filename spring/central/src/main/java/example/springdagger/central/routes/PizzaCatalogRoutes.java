@@ -1,16 +1,14 @@
 package example.springdagger.central.routes;
 
+import example.springdagger.central.data.transfer.dto.NewPizzaOrder;
 import example.springdagger.central.routes.handlers.IngredientsHandler;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
 public class PizzaCatalogRoutes {
     private final IngredientsHandler ingredientsHandler;
@@ -23,9 +21,15 @@ public class PizzaCatalogRoutes {
 
     private RouterFunction createRouterFunction() {
         return RouterFunctions.route(
-                GET("/ingredients").and(accept(MediaType.APPLICATION_JSON_UTF8)), this::getAllIngredients)
+                GET("/ingredients").and(acceptJson()), this::getAllIngredients)
                 .andRoute(
-                        GET("/ingredients/{id}").and(accept(MediaType.APPLICATION_JSON_UTF8)), this::getIngredientById
+                        GET("/ingredients/{id}").and(acceptJson()), this::getIngredientById
+                )
+                .andRoute(
+                        GET("/pizza").and(acceptJson()), this::getPizzas
+                )
+                .andRoute(
+                        POST("/order").and(acceptJson()).and(contentType(MediaType.APPLICATION_JSON_UTF8)), this::orderPizza
                 );
 
     }
@@ -40,6 +44,22 @@ public class PizzaCatalogRoutes {
         return ingredientsHandler.getIngredient(id)
                 .flatMap(this::toOkJsonResponse)
                 .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    private Mono<ServerResponse> getPizzas(ServerRequest request) {
+        Integer amountOfPizzas = request.queryParam("amount").map(Integer::valueOf).orElse(10);
+        return ingredientsHandler.getPizzas(amountOfPizzas).collectList()
+                .flatMap(this::toOkJsonResponse);
+    }
+
+    private Mono<ServerResponse> orderPizza(ServerRequest request) {
+        Mono<NewPizzaOrder> newPizzaOrder = request.bodyToMono(NewPizzaOrder.class);
+        return ingredientsHandler.orderPizza(newPizzaOrder)
+                .then(ServerResponse.status(HttpStatus.CREATED).build());
+    }
+
+    private RequestPredicate acceptJson() {
+        return accept(MediaType.APPLICATION_JSON_UTF8);
     }
 
     private <T> Mono<ServerResponse> toOkJsonResponse(T data) {
