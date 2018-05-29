@@ -7,15 +7,10 @@ import example.springdagger.central.model.Pizza;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-@Named
 public class PizzaCatalogService {
     private final IngredientsDAO ingredientsDAO;
     private final PizzaDAO pizzaDAO;
 
-    @Inject
     public PizzaCatalogService(IngredientsDAO ingredientsDAO, PizzaDAO pizzaDAO) {
         this.ingredientsDAO = ingredientsDAO;
         this.pizzaDAO = pizzaDAO;

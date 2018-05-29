@@ -1,5 +1,6 @@
 package example.springdagger.central;
 
+import example.springdagger.central.appconfig.RoutesConfig;
 import example.springdagger.central.services.PizzaCatalogService;
 import example.springdagger.central.services.PizzaOrderService;
 import org.junit.jupiter.api.Tag;

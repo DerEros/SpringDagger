@@ -1,6 +1,6 @@
 package example.springdagger.central.webclienttest;
 
-import example.springdagger.central.RoutesConfig;
+import example.springdagger.central.appconfig.RoutesConfig;
 import example.springdagger.central.model.Pizza;
 import example.springdagger.central.services.PizzaCatalogService;
 import example.springdagger.central.services.PizzaOrderService;

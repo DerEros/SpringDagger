@@ -1,4 +1,4 @@
-package example.springdagger.central;
+package example.springdagger.central.appconfig;
 
 import example.springdagger.central.routes.PizzaCatalogRoutes;
 import example.springdagger.central.routes.handlers.IngredientsHandler;
