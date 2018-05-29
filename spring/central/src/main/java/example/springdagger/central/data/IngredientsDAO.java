@@ -5,15 +5,11 @@ import example.springdagger.central.model.Ingredient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Map;
 
-@Named
 public class IngredientsDAO {
     private final IngredientsRepo ingredientsRepo;
 
-    @Inject
     public IngredientsDAO(IngredientsRepo ingredientsRepo) {
         this.ingredientsRepo = ingredientsRepo;
     }

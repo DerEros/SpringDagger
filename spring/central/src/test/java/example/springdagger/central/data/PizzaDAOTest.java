@@ -1,5 +1,6 @@
 package example.springdagger.central.data;
 
+import example.springdagger.central.appconfig.RepositoryConfig;
 import example.springdagger.central.model.Ingredient;
 import example.springdagger.central.model.Pizza;
 import org.junit.jupiter.api.Tag;

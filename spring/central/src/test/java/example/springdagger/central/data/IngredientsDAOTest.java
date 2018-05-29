@@ -1,5 +1,7 @@
 package example.springdagger.central.data;
 
+import example.springdagger.central.appconfig.DAOConfig;
+import example.springdagger.central.appconfig.RepositoryConfig;
 import example.springdagger.central.model.Ingredient;
 import example.springdagger.central.util.FakeIngredients;
 import org.junit.jupiter.api.Tag;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {IngredientsDAO.class, RepositoryConfig.class})
+@SpringBootTest(classes = {RepositoryConfig.class, DAOConfig.class})
 @DataJpaTest
 @EntityScan(basePackageClasses = {Ingredient.class})
 @Tag("DBTest")
