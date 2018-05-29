@@ -37,8 +37,9 @@ public class PizzaCatalogRoutes {
 
     private Mono<ServerResponse> getIngredientById(ServerRequest request) {
         Long id = Long.valueOf(request.pathVariable("id"));
-
-        return ingredientsHandler.getIngredient(id).flatMap(this::toOkJsonResponse);
+        return ingredientsHandler.getIngredient(id)
+                .flatMap(this::toOkJsonResponse)
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     private <T> Mono<ServerResponse> toOkJsonResponse(T data) {

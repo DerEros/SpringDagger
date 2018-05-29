@@ -1,5 +1,6 @@
 package example.springdagger.central.webclienttest;
 
+import example.springdagger.central.RoutesConfig;
 import example.springdagger.central.model.Pizza;
 import example.springdagger.central.services.PizzaCatalogService;
 import example.springdagger.central.services.PizzaOrderService;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -29,8 +31,9 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 @WebFluxTest
 @AutoConfigureWebTestClient
 @AutoConfigureJson
+@ContextConfiguration(classes = {RoutesConfig.class})
 @Tag("WebClient")
-class PizzaCatalogControllerWebClientTest {
+class PizzaCatalogRoutesWebClientTest {
 
     private final FakeIngredients fakeIngredients = new FakeIngredients();
     private final FakePizzas fakePizzas = new FakePizzas();

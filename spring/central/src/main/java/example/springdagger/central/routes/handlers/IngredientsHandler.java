@@ -13,10 +13,10 @@ public class IngredientsHandler {
     }
 
     public Flux<Ingredient> getAllIngredients() {
-        return Flux.empty();
+        return pizzaCatalogService.getAllIngredients();
     }
 
     public Mono<Ingredient> getIngredient(Long id) {
-        return Mono.empty();
+        return pizzaCatalogService.getIngredientById(id);
     }
 }
